@@ -1,0 +1,25 @@
+/* Estilos base y variables visuales en espanol para toda la app. */
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap");
+
+:root {
+  --bg-page: #f6f5ef;
+  --bg-soft: #eef3f8;
+  --paper: #ffffff;
+  --ink: #132238;
+  --ink-soft: #4b5f78;
+  --brand: #0f4c81;
+  --brand-strong: #0b3f6b;
+  --brand-soft: #d8e9f7;
+  --accent: #ef6f3c;
+  --accent-soft: #fff1eb;
+  --ok: #2f7e79;
+  --warn: #b8701b;
+  --danger: #b83a30;
+  --border: #d7dce4;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --shadow-soft: 0 12px 32px rgba(15, 40, 77, 0.08);
+  --shadow-strong: 0 18px 48px rgba(15, 40, 77, 0.14);
+}
+
