@@ -1,7 +1,6 @@
 // Archivo: frontend\src\views\DetectionView.jsx. Codigo y comentarios en espanol.
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import StepLayout from "../components/layout/StepLayout";
 import DetectionCard from "../components/detection/DetectionCard";
 import ErrorAlert from "../components/common/ErrorAlert";
 import Loader from "../components/common/Loader";
@@ -33,7 +32,7 @@ function DetectionView() {
           setError("Los archivos temporales de este lote ya no existen. Debes subir los Excel de nuevo.");
           return;
         }
-        setError(err.response?.data?.message || "No se pudo detectar la estructura de los archivos");
+        setError(err.response?.data?.message || "No se pudo detectar la estructura de los archivos.");
       } finally {
         setLoading(false);
       }
@@ -43,10 +42,11 @@ function DetectionView() {
   }, [state.batchId, dispatch, actionTypes, navigate]);
 
   return (
-    <StepLayout
-      title="Deteccion inteligente de columnas"
-      subtitle="Analizamos cada archivo para localizar la fila de cabeceras y proponer Fecha, Concepto e Importe."
-    >
+    <>
+      <h2>Detección inteligente de columnas</h2>
+      <p className="lead">
+        Analizamos cada archivo para localizar la fila de cabeceras y proponer Fecha, Concepto e Importe.
+      </p>
       {loading && <Loader text="Analizando archivos..." />}
       <ErrorAlert message={error} />
       {(state.detections || []).map((detection) => {
@@ -77,7 +77,7 @@ function DetectionView() {
           Confirmar columnas
         </button>
       </div>
-    </StepLayout>
+    </>
   );
 }
 

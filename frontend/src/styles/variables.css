@@ -1,25 +1,82 @@
-/* Estilos base y variables visuales en espanol para toda la app. */
-@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap");
+/*
+ * variables.css
+ *
+ * Tokens visuales globales. Centralizamos para evitar magic numbers y para
+ * que un cambio (ej. subir el padding base) se aplique en todo el producto.
+ *
+ * Filosofia de diseno: sobrio, neutro, profesional. Inspirado en Linear,
+ * Stripe Dashboard y Mercury. Nada de:
+ *   - gradients de marca en botones o cabeceras,
+ *   - sombras flotantes "AI-looking",
+ *   - burbujas decorativas sin proposito,
+ *   - colores saturados o neon.
+ *
+ * Spacing scale (multiplos de 4):
+ *   1=4 2=8 3=12 4=16 5=20 6=24 8=32 10=40 12=48 16=64
+ *
+ * Typography scale (escala modular ~1.20):
+ *   xs=12 sm=13 base=15 lg=17 xl=20 2xl=24 3xl=32
+ */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
 :root {
-  --bg-page: #f6f5ef;
-  --bg-soft: #eef3f8;
+  /* Neutros (zinc/slate). El fondo es practicamente blanco para dejar que
+     los datos respiren; los paneles son blanco puro sobre ese fondo. */
+  --bg-page: #fafafa;
+  --bg-soft: #f4f4f5;
   --paper: #ffffff;
-  --ink: #132238;
-  --ink-soft: #4b5f78;
-  --brand: #0f4c81;
-  --brand-strong: #0b3f6b;
-  --brand-soft: #d8e9f7;
-  --accent: #ef6f3c;
-  --accent-soft: #fff1eb;
-  --ok: #2f7e79;
-  --warn: #b8701b;
-  --danger: #b83a30;
-  --border: #d7dce4;
-  --radius-sm: 10px;
-  --radius-md: 16px;
-  --radius-lg: 22px;
-  --shadow-soft: 0 12px 32px rgba(15, 40, 77, 0.08);
-  --shadow-strong: 0 18px 48px rgba(15, 40, 77, 0.14);
-}
+  --ink: #18181b;
+  --ink-soft: #52525b;
+  --ink-muted: #71717a;
+  --border: #e4e4e7;
+  --border-strong: #d4d4d8;
 
+  /* Marca y acentos. El primary del producto es casi-negro (--ink): asi
+     los CTAs se imponen sin necesidad de gradient ni saturacion. El
+     acento (azul indigo Tailwind) se usa para links y foco. */
+  --brand: #18181b;
+  --brand-strong: #09090b;
+  --brand-soft: #f4f4f5;
+  --accent: #4f46e5;
+  --accent-strong: #4338ca;
+  --accent-soft: #eef2ff;
+
+  /* Estados financieros (verde gana, rojo pierde). Tonos discretos, no
+     neon. Se usan tanto en KPI Balance como en charts. */
+  --ok: #16a34a;
+  --ok-soft: #f0fdf4;
+  --warn: #d97706;
+  --warn-soft: #fffbeb;
+  --danger: #dc2626;
+  --danger-soft: #fef2f2;
+
+  /* Radius: discretos y consistentes. Sin radius-lg "casi-pildora". */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+
+  /* Sombras minimas. La mayoria de paneles confian en el borde 1px. */
+  --shadow-soft: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-strong: 0 4px 12px rgba(15, 23, 42, 0.08);
+
+  /* Spacing scale. */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* Typography scale. */
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-base: 15px;
+  --text-lg: 17px;
+  --text-xl: 20px;
+  --text-2xl: 24px;
+  --text-3xl: 32px;
+}

@@ -26,21 +26,28 @@ const formatCellValue = (value) => {
   return value;
 };
 
-function PreviewTable({ headers = [], rows = [], className = "" }) {
+function PreviewTable({ headers = [], rows = [], className = "", caption = "" }) {
   if (!rows || rows.length === 0) {
     return <p>Sin datos para mostrar.</p>;
   }
 
+  // Si no recibimos headers explicitos, derivamos las claves del primer
+  // objeto. Esto permite reutilizar la tabla tanto con arrays de arrays
+  // (vista de deteccion: filas crudas del Excel) como con arrays de objetos
+  // (vista de historico: documentos de Mongo).
   const computedHeaders = headers.length ? headers : Object.keys(rows[0] || {});
   const wrapperClassName = `table-wrap ${className}`.trim();
 
   return (
     <div className={wrapperClassName}>
       <table>
+        {caption ? <caption className="visually-hidden">{caption}</caption> : null}
         <thead>
           <tr>
             {computedHeaders.map((header) => (
-              <th key={header}>{header}</th>
+              <th scope="col" key={header}>
+                {header}
+              </th>
             ))}
           </tr>
         </thead>

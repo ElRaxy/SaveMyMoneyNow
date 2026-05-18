@@ -1,7 +1,6 @@
 ﻿// Archivo: frontend/src/views/ColumnConfirmView.jsx. Codigo y comentarios en espanol.
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import StepLayout from "../components/layout/StepLayout";
 import ColumnMappingForm from "../components/mapping/ColumnMappingForm";
 import PreviewTable from "../components/table/PreviewTable";
 import ErrorAlert from "../components/common/ErrorAlert";
@@ -172,10 +171,11 @@ function ColumnConfirmView() {
   };
 
   return (
-    <StepLayout
-      title="Confirmacion manual de columnas"
-      subtitle="Revisa y corrige el mapeo antes de normalizar. Esta confirmacion hace la importacion robusta."
-    >
+    <>
+      <h2>Confirmación manual de columnas</h2>
+      <p className="lead">
+        Revisa y corrige el mapeo antes de normalizar. Esta confirmación hace la importación robusta.
+      </p>
       {(state.detections || []).map((detection) => {
         const fileInfo = state.uploadedFiles.find((item) => item.fileId === detection.fileId);
         const previewData = previewByFile[detection.fileId];
@@ -191,11 +191,11 @@ function ColumnConfirmView() {
             />
 
             <article className="card">
-              <p>Preview de importacion con el mapeo seleccionado:</p>
-              {previewLoadingByFile[detection.fileId] ? <Loader text="Actualizando preview..." /> : null}
+              <p>Vista previa de la importación con el mapeo seleccionado:</p>
+              {previewLoadingByFile[detection.fileId] ? <Loader text="Actualizando vista previa..." /> : null}
               {previewData ? (
                 <p className="muted">
-                  Filas validas: {previewData.totalPreviewRows} | Filas invalidas: {previewData.totalInvalidRows}
+                  Filas válidas: {previewData.totalPreviewRows} | Filas inválidas: {previewData.totalInvalidRows}
                 </p>
               ) : null}
               <PreviewTable
@@ -226,7 +226,7 @@ function ColumnConfirmView() {
           Confirmar y continuar
         </button>
       </div>
-    </StepLayout>
+    </>
   );
 }
 

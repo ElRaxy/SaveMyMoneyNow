@@ -1,7 +1,6 @@
 // Archivo: frontend\src\views\NormalizationView.jsx. Codigo y comentarios en espanol.
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import StepLayout from "../components/layout/StepLayout";
 import PreviewTable from "../components/table/PreviewTable";
 import { useImportWizard } from "../state/ImportWizardContext";
 import { formatDate } from "../utils/formatDate";
@@ -18,17 +17,18 @@ function NormalizationView() {
   }, [state.batchId, state.normalizedPreview.length, navigate]);
 
   return (
-    <StepLayout
-      title="Normalizacion de movimientos"
-      subtitle="Todos los archivos quedan unificados con el mismo modelo interno para poder comparar y filtrar bien."
-    >
+    <>
+      <h2>Normalización de movimientos</h2>
+      <p className="lead">
+        Todos los archivos quedan unificados con el mismo modelo interno para poder comparar y filtrar.
+      </p>
       <div className="summary-grid">
         <article className="summary-box">
           <p className="summary-label">Movimientos normalizados</p>
           <p className="summary-value">{state.totalNormalized}</p>
         </article>
         <article className="summary-box">
-          <p className="summary-label">Filas invalidas omitidas</p>
+          <p className="summary-label">Filas inválidas omitidas</p>
           <p className="summary-value">{state.invalidRows.length}</p>
         </article>
       </div>
@@ -45,10 +45,10 @@ function NormalizationView() {
       />
       <div className="actions-row">
         <button type="button" onClick={() => navigate("/categorization")}>
-          Ir a categorizacion
+          Ir a categorización
         </button>
       </div>
-    </StepLayout>
+    </>
   );
 }
 

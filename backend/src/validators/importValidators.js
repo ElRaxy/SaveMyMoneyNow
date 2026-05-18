@@ -1,4 +1,12 @@
-// Archivo: backend\src\validators\importValidators.js. Codigo y comentarios en espanol.
+// Archivo: backend\src\validators\importValidators.js
+//
+// Validadores manuales que devuelven `null` cuando el body es valido o una
+// cadena con el motivo del rechazo. Se acoplan a Express con el middleware
+// `validateRequest` (validateRequest.js), de manera que cada ruta declara su
+// validador y el middleware traduce el string a una respuesta 400 con JSON.
+// Mantenemos validadores manuales (en vez de Zod/Yup) para no introducir
+// dependencias extra en una practica academica, pero el contrato es el mismo.
+
 export const validateConfirmColumnsBody = (req) => {
   if (!Array.isArray(req.body?.files) || req.body.files.length === 0) {
     return "files[] es obligatorio";
@@ -25,6 +33,24 @@ export const validatePreviewMappingBody = (req) => {
 
   if (!body.mapping.fecha || !body.mapping.concepto || !body.mapping.importe) {
     return "mapping debe incluir fecha, concepto e importe";
+  }
+
+  return null;
+};
+
+// Valida el body de `POST /import/:batchId/categorize-preview`.
+// Ambos campos son OPCIONALES (el flujo permite re-categorizar sin tocar nada),
+// pero si se envian deben ser arrays para evitar TypeError al recorrerlos
+// en Categorization.service.js (applyManualCategoryEdits / applyRuleActions).
+export const validateCategorizePreviewBody = (req) => {
+  const body = req.body || {};
+
+  if (body.manualCategoryEdits !== undefined && !Array.isArray(body.manualCategoryEdits)) {
+    return "manualCategoryEdits debe ser array";
+  }
+
+  if (body.ruleActions !== undefined && !Array.isArray(body.ruleActions)) {
+    return "ruleActions debe ser array";
   }
 
   return null;

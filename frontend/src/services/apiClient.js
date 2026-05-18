@@ -1,5 +1,20 @@
-// Cliente HTTP compartido con logs de peticion/respuesta para frontend.
+// Archivo: frontend\src\services\apiClient.js
+//
+// Cliente HTTP compartido. Anade interceptores de log de peticion y
+// respuesta para facilitar la depuracion durante el desarrollo del wizard.
+// Los logs SOLO se emiten en modo desarrollo (Vite expone import.meta.env.DEV)
+// para no contaminar la consola en produccion ni filtrar URLs internas.
 import axios from "axios";
+
+const IS_DEV = Boolean(import.meta.env?.DEV);
+
+const logInfo = (...args) => {
+  if (IS_DEV) console.info(...args);
+};
+
+const logError = (...args) => {
+  if (IS_DEV) console.error(...args);
+};
 
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL || "http://localhost:4000/api"
@@ -8,11 +23,11 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use(
   (config) => {
     const metodo = String(config.method || "GET").toUpperCase();
-    console.info(`[Frontend][API] -> ${metodo} ${config.url}`);
+    logInfo(`[Frontend][API] -> ${metodo} ${config.url}`);
     return config;
   },
   (error) => {
-    console.error("[Frontend][API] Error antes de enviar peticion:", error);
+    logError("[Frontend][API] Error antes de enviar peticion:", error);
     return Promise.reject(error);
   }
 );
@@ -20,14 +35,14 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => {
     const metodo = String(response.config?.method || "GET").toUpperCase();
-    console.info(`[Frontend][API] <- ${metodo} ${response.config?.url} (${response.status})`);
+    logInfo(`[Frontend][API] <- ${metodo} ${response.config?.url} (${response.status})`);
     return response;
   },
   (error) => {
     const metodo = String(error.config?.method || "GET").toUpperCase();
     const url = error.config?.url || "URL desconocida";
     const status = error.response?.status || "sin estado";
-    console.error(`[Frontend][API] <- ${metodo} ${url} (${status})`, error.response?.data || error.message);
+    logError(`[Frontend][API] <- ${metodo} ${url} (${status})`, error.response?.data || error.message);
     return Promise.reject(error);
   }
 );

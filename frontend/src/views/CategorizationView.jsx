@@ -1,16 +1,17 @@
 // Archivo: frontend\src\views\CategorizationView.jsx. Codigo y comentarios en espanol.
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import StepLayout from "../components/layout/StepLayout";
 import CategoryEditorTable from "../components/category/CategoryEditorTable";
 import RuleCreator from "../components/category/RuleCreator";
 import Loader from "../components/common/Loader";
 import ErrorAlert from "../components/common/ErrorAlert";
+import { useToast } from "../components/common/Toast";
 import { categorizePreview, checkDuplicates, commitBatch } from "../services/importApi";
 import { useImportWizard } from "../state/ImportWizardContext";
 
 function CategorizationView() {
   const navigate = useNavigate();
+  const showToast = useToast();
   const { state, dispatch, actionTypes } = useImportWizard();
 
   const [loading, setLoading] = useState(false);
@@ -32,7 +33,7 @@ function CategorizationView() {
         setRows(data.categorizedPreview || []);
         dispatch({ type: actionTypes.SET_CATEGORIZED, payload: data.categorizedPreview || [] });
       } catch (err) {
-        setError(err.response?.data?.message || "No se pudo preparar la categorizacion");
+        setError(err.response?.data?.message || "No se pudo preparar la categorización.");
       } finally {
         setLoading(false);
       }
@@ -47,6 +48,9 @@ function CategorizationView() {
       map.set(newEdit.tempId, { ...map.get(newEdit.tempId), ...newEdit });
       return Array.from(map.values());
     });
+    // Aviso ligero: confirma al usuario que su cambio manual queda registrado
+    // y se aplicara en el preview de la siguiente categorizacion.
+    showToast({ message: "Categorización lista para confirmar", type: "info" });
   };
 
   const onAddRule = (ruleAction) => {
@@ -80,32 +84,39 @@ function CategorizationView() {
       });
 
       dispatch({ type: actionTypes.SET_COMMIT_SUMMARY, payload: summary });
+      showToast({
+        message: `Importación completada: ${summary.inserted} nuevos, ${summary.keptExisting} mantenidos, ${summary.replaced} reemplazados, ${summary.keptBoth} duplicados conservados`,
+        type: "success",
+        durationMs: 6000
+      });
       navigate("/dashboard");
     } catch (err) {
-      setError(err.response?.data?.message || "No se pudo completar la categorizacion");
+      setError(err.response?.data?.message || "No se pudo completar la categorización.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <StepLayout
-      title="Categorizacion de gastos"
-      subtitle="Se aplican reglas automaticas y puedes ajustar categoria por fila. Los cambios se pueden aprender como regla reutilizable."
-    >
+    <>
+      <h2>Categorización de gastos</h2>
+      <p className="lead">
+        Se aplican reglas automáticas y puedes ajustar la categoría por fila. Los cambios se pueden aprender como
+        regla reutilizable.
+      </p>
       <RuleCreator onCreateRule={onAddRule} />
       <CategoryEditorTable rows={rows} edits={edits} onEdit={onEdit} />
       <p className="muted">
-        Marca "Aprender regla" para que la categoria se reutilice automaticamente en futuras importaciones.
+        Marca «Aprender regla» para que la categoría se reutilice automáticamente en futuras importaciones.
       </p>
       <ErrorAlert message={error} />
-      {loading && <Loader text="Procesando categorizacion..." />}
+      {loading && <Loader text="Procesando categorización..." />}
       <div className="actions-row">
         <button type="button" disabled={!canContinue} onClick={continueFlow}>
           Confirmar y revisar duplicados
         </button>
       </div>
-    </StepLayout>
+    </>
   );
 }
 

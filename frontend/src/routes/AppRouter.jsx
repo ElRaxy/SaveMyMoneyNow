@@ -1,5 +1,12 @@
 // Archivo: frontend\src\routes\AppRouter.jsx. Codigo y comentarios en espanol.
+//
+// Patron idiomatico react-router-dom v6: StepLayout es ruta PADRE con
+// <Outlet />. Cada vista hija deja de envolverse a si misma con StepLayout;
+// el router inyecta la vista activa en el slot. Es el patron equivalente a
+// "nested routes" de react-router y elimina 9 importaciones duplicadas de
+// StepLayout en cada vista.
 import { Navigate, Route, Routes } from "react-router-dom";
+import StepLayout from "../components/layout/StepLayout.jsx";
 import WelcomeView from "../views/WelcomeView.jsx";
 import UploadView from "../views/UploadView.jsx";
 import DetectionView from "../views/DetectionView.jsx";
@@ -13,15 +20,17 @@ import HistoryView from "../views/HistoryView.jsx";
 function AppRouter() {
   return (
     <Routes>
-      <Route path="/" element={<WelcomeView />} />
-      <Route path="/upload" element={<UploadView />} />
-      <Route path="/detection" element={<DetectionView />} />
-      <Route path="/confirm" element={<ColumnConfirmView />} />
-      <Route path="/normalization" element={<NormalizationView />} />
-      <Route path="/categorization" element={<CategorizationView />} />
-      <Route path="/duplicates" element={<DuplicateResolutionView />} />
-      <Route path="/dashboard" element={<DashboardView />} />
-      <Route path="/history" element={<HistoryView />} />
+      <Route element={<StepLayout />}>
+        <Route path="/" element={<WelcomeView />} />
+        <Route path="/upload" element={<UploadView />} />
+        <Route path="/detection" element={<DetectionView />} />
+        <Route path="/confirm" element={<ColumnConfirmView />} />
+        <Route path="/normalization" element={<NormalizationView />} />
+        <Route path="/categorization" element={<CategorizationView />} />
+        <Route path="/duplicates" element={<DuplicateResolutionView />} />
+        <Route path="/dashboard" element={<DashboardView />} />
+        <Route path="/history" element={<HistoryView />} />
+      </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

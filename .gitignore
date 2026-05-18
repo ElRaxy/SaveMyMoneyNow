@@ -1,6 +1,24 @@
 ﻿backend/node_modules/
 frontend/node_modules/
 frontend/dist/
-backend/uploads/
+
+# Variables de entorno privadas
 backend/.env
 frontend/.env
+
+# Carpeta temporal de subidas: ignorar contenido pero conservar estructura
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# Logs y temporales
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Sistema/editores
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

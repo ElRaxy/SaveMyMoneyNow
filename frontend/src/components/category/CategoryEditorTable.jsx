@@ -1,19 +1,17 @@
-// Archivo: frontend\src\components\category\CategoryEditorTable.jsx. Codigo y comentarios en espanol.
+// Archivo: frontend\src\components\category\CategoryEditorTable.jsx
+//
+// Tabla del paso 5 (Categorizacion). Para cada movimiento muestra fecha,
+// concepto, importe y un <select> con la categoria. El select admite:
+//   - elegir una categoria del catalogo (CATEGORY_OPTIONS),
+//   - mantener una categoria personalizada que llegue del backend,
+//   - abrir un editor inline para crear una categoria nueva (sentinel
+//     NEW_CATEGORY_VALUE).
+// El checkbox "Aprender regla" decide si la edicion se persistira como
+// CategoryRule en BBDD (ver Categorization.service.js#learnRulesFromCategoryEdits).
 import { useState } from "react";
+import { CATEGORY_OPTIONS, NEW_CATEGORY_VALUE } from "../../constants/categories";
 import { formatAmount } from "../../utils/formatAmount";
 import { formatDate } from "../../utils/formatDate";
-
-const CATEGORY_OPTIONS = [
-  "Comida",
-  "Gasolina",
-  "Ocio",
-  "Salud",
-  "Hogar",
-  "Transporte",
-  "Nomina",
-  "Otros"
-];
-const NEW_CATEGORY_VALUE = "__new_category__";
 
 function CategoryEditorTable({ rows = [], edits = [], onEdit }) {
   const editMap = new Map(edits.map((item) => [item.tempId, item]));

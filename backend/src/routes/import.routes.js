@@ -12,7 +12,12 @@ import {
 } from "../controllers/Import.controller.js";
 import { uploadExcelFiles } from "../middlewares/uploadMiddleware.js";
 import { validateRequest } from "../middlewares/validateRequest.js";
-import { validateCommitBody, validateConfirmColumnsBody, validatePreviewMappingBody } from "../validators/importValidators.js";
+import {
+  validateCategorizePreviewBody,
+  validateCommitBody,
+  validateConfirmColumnsBody,
+  validatePreviewMappingBody
+} from "../validators/importValidators.js";
 
 const router = Router();
 
@@ -21,7 +26,7 @@ router.get("/:batchId", getImportBatch);
 router.get("/:batchId/detect", detectBatch);
 router.post("/:batchId/confirm-columns", validateRequest(validateConfirmColumnsBody), confirmColumns);
 router.post("/:batchId/preview-mapping", validateRequest(validatePreviewMappingBody), previewMapping);
-router.post("/:batchId/categorize-preview", categorizePreview);
+router.post("/:batchId/categorize-preview", validateRequest(validateCategorizePreviewBody), categorizePreview);
 router.post("/:batchId/check-duplicates", checkDuplicates);
 router.post("/:batchId/commit", validateRequest(validateCommitBody), commitImport);
 

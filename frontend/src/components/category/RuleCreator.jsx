@@ -1,8 +1,10 @@
-// Archivo: frontend\src\components\category\RuleCreator.jsx. Codigo y comentarios en espanol.
+// Archivo: frontend\src\components\category\RuleCreator.jsx
+//
+// Formulario para crear o actualizar una regla de categorizacion sin tener
+// que editar la tabla de movimientos. Las reglas se persisten via
+// /api/rules y se aplican en futuras importaciones.
 import { useState } from "react";
-
-const categoryOptions = ["Comida", "Gasolina", "Ocio", "Salud", "Hogar", "Transporte", "Nomina", "Otros"];
-const NEW_CATEGORY_VALUE = "__new_category__";
+import { CATEGORY_OPTIONS as categoryOptions, NEW_CATEGORY_VALUE } from "../../constants/categories";
 
 function RuleCreator({ onCreateRule }) {
   const [keyword, setKeyword] = useState("");
@@ -70,7 +72,7 @@ function RuleCreator({ onCreateRule }) {
           min="0"
           max="1000"
           value={priority}
-          onChange={(event) => setPriority(event.target.value)}
+          onChange={(event) => setPriority(Number(event.target.value) || 0)}
         />
       </label>
 

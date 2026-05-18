@@ -1,4 +1,11 @@
-// Archivo: frontend\src\components\dashboard\FilterBar.jsx. Codigo y comentarios en espanol.
+// Archivo: frontend\src\components\dashboard\FilterBar.jsx
+//
+// Barra de filtros del Dashboard. La granularidad se aplica solo al endpoint
+// /api/dashboard/comparison; el resto de endpoints ignoran ese parametro.
+// Las categorias proceden de la constante compartida para que aparecer una
+// nueva categoria en CATEGORY_OPTIONS la haga visible aqui automaticamente.
+import { CATEGORY_OPTIONS } from "../../constants/categories";
+
 function FilterBar({ filters, onChange, onApply }) {
   return (
     <form
@@ -40,14 +47,11 @@ function FilterBar({ filters, onChange, onApply }) {
         Categoria
         <select value={filters.categoria} onChange={(event) => onChange({ categoria: event.target.value })}>
           <option value="">Todas</option>
-          <option value="Comida">Comida</option>
-          <option value="Gasolina">Gasolina</option>
-          <option value="Ocio">Ocio</option>
-          <option value="Salud">Salud</option>
-          <option value="Hogar">Hogar</option>
-          <option value="Transporte">Transporte</option>
-          <option value="Nomina">Nomina</option>
-          <option value="Otros">Otros</option>
+          {CATEGORY_OPTIONS.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
         </select>
       </label>
 

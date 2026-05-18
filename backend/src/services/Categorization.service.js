@@ -1,7 +1,27 @@
-// Archivo: backend\src\services\Categorization.service.js. Codigo y comentarios en espanol.
+// Archivo: backend\src\services\Categorization.service.js
+//
+// Sistema de categorizacion de movimientos basado en REGLAS PERSISTIDAS en
+// Mongo. Una regla es: si el concepto contiene `keyword` -> asignar
+// `categoria`. Las reglas tienen `priority` (numero entero) para resolver
+// conflictos: a MENOR numero, MAYOR prioridad (no es intuitivo: lo
+// elegimos asi para poder anteponer reglas "naturales" como "mercadona->
+// Comida" con priority 10 frente a reglas aprendidas por el usuario con
+// priority 80-100). La ordenacion en getActiveRules() ya respeta ese
+// criterio.
+//
+// Ciclo completo:
+//   1) ensureDefaultRules() -> escribe en BBDD las reglas semilla.
+//   2) categorizeRows()      -> aplica reglas a un lote (auto).
+//   3) applyManualCategoryEdits() -> sobre-escribe lo anterior con la
+//      edicion manual del usuario en el paso 5.
+//   4) learnRulesFromCategoryEdits() -> guarda las ediciones marcadas como
+//      "aprender" como nueva regla, para futuras importaciones.
 import CategoryRule from "../models/CategoryRule.model.js";
 import { normalizeText } from "../utils/text.js";
 
+// Reglas semilla. Se insertan via upsert: si existen ya con otra prioridad,
+// no las pisamos; si no existen, las creamos. Esto evita romper aprendizaje
+// previo del usuario al reiniciar el servidor.
 const DEFAULT_RULES = [
   { keyword: "mercadona", categoria: "Comida", priority: 10 },
   { keyword: "dia", categoria: "Comida", priority: 12 },
@@ -23,6 +43,10 @@ export const getActiveRules = async () => {
   return CategoryRule.find({ active: true }).sort({ priority: 1, keyword: 1 }).lean();
 };
 
+// Recorre las reglas en orden de prioridad y se queda con la PRIMERA que
+// matchea. Por eso ordenamos en getActiveRules() por priority ascendente:
+// la regla mas especifica/preferida gana. Si nada matchea, mantenemos la
+// categoria que pueda venir del paso anterior o "Otros" como fallback.
 export const categorizeRows = async (rows) => {
   const rules = await getActiveRules();
 
