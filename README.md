@@ -2,7 +2,7 @@
 
 App fullstack para analizar gastos e ingresos personales a partir de extractos bancarios en Excel. Subes los archivos, un asistente te lleva paso a paso detectando columnas, normalizando, categorizando y quitando duplicados, y al final lo guarda todo en MongoDB.
 
-Node 18+ · React 18 · MongoDB Atlas · licencia académica.
+Node 18+ · React 18 · MongoDB Atlas · MIT.
 
 ---
 
@@ -22,7 +22,6 @@ Node 18+ · React 18 · MongoDB Atlas · licencia académica.
 - [Troubleshooting](#troubleshooting)
 - [Estructura del proyecto](#estructura-del-proyecto)
 - [Tests](#tests)
-- [Entrega DAW](#entrega-daw)
 - [Licencia](#licencia)
 
 ---
@@ -37,22 +36,21 @@ SaveMyMoneyNow se come ese trabajo. Subes uno o varios `.xls/.xlsx` y el asisten
 
 ## Capturas
 
-Las capturas viven en `docs/screenshots/`.
+El asistente detecta la fila de cabecera y propone el mapeo de columnas:
 
-| # | Pantalla | Archivo |
-| --- | --- | --- |
-| 01 | Bienvenida | `docs/screenshots/01-welcome.png` |
-| 02 | Subida múltiple con archivo cargado | `docs/screenshots/02-upload.png` |
-| 03 | Detección automática de columnas | `docs/screenshots/03-detection.png` |
-| 04 | Confirmación manual del mapeo | `docs/screenshots/04-confirm.png` |
-| 05 | Normalización (modelo único) | `docs/screenshots/05-normalization.png` |
-| 06 | Categorización con reglas | `docs/screenshots/06-categorization.png` |
-| 07 | Resolución de duplicados | `docs/screenshots/07-duplicates.png` |
-| 08 | Dashboard con `InsightsPanel` | `docs/screenshots/08-dashboard.png` |
-| 09 | Histórico con CRUD y búsqueda | `docs/screenshots/09-history.png` |
-| 10 | Modal de edición de movimiento | `docs/screenshots/10-edit-modal.png` |
-| 11 | Dashboard vacío (`EmptyState`) | `docs/screenshots/11-dashboard-empty.png` |
-| 12 | Búsqueda activa en el histórico | `docs/screenshots/12-history-search.png` |
+![Detección automática de columnas](docs/screenshots/03-detection.png)
+
+Los duplicados se avisan por fecha y concepto, con tres formas de resolver cada fila:
+
+![Resolución de duplicados](docs/screenshots/07-duplicates.png)
+
+Y el dashboard, ya con los movimientos dentro:
+
+![Dashboard con filtros y comparativas](docs/screenshots/08-dashboard.png)
+
+Las doce pantallas están en `docs/screenshots/`: bienvenida, subida múltiple,
+detección, confirmación del mapeo, normalización, categorización, duplicados,
+dashboard, histórico, modal de edición, dashboard vacío y búsqueda en el histórico.
 
 ---
 
@@ -405,38 +403,21 @@ SaveMyMoneyNow/
 
 ## Tests
 
-No hay suite automatizada por requisitos de la práctica (la rúbrica DAW prioriza funcionalidad). Lo que sí se probó:
+113 casos en 18 ficheros, con vitest en los dos lados:
 
-- **Build de frontend**: `npm run build` en `frontend/` acaba sin errores y genera `dist/`.
-- **Smoke syntax backend**: `node --check` sobre cada archivo de `backend/src/**/*.js`.
-- **Pruebas manuales del flujo**: importar tres extractos distintos (BBVA, Santander, genérico), comprobar la detección automática, forzar conflictos reimportando, validar export PDF y XLSX, y revisar paginación y filtros del dashboard.
+```bash
+cd backend  && npm test    # 66 casos, 10 ficheros
+cd frontend && npm test    # 47 casos, 8 ficheros
+```
 
-Si algún día se añaden tests, los sitios naturales son:
-
-- `services/ExcelDetection.service.js` (puro, sin I/O en sus funciones internas).
-- `services/Normalization.service.js` (puro).
-- `services/Duplicate.service.js` (necesita mock de `Movement.find`).
-- `utils/date.js`, `utils/amount.js`, `utils/text.js` (puros, fáciles de cubrir).
-
----
-
-## Entrega DAW
-
-Antes de hacer el ZIP de Aules:
-
-1. **Borrar dependencias**: `backend/node_modules/` y `frontend/node_modules/`.
-2. **Vaciar uploads**: contenido de `backend/uploads/` (deja la carpeta vacía con un `.gitkeep` si quieres).
-3. **Borrar el build**: `frontend/dist/`.
-4. **Verificar lo importante**:
-   - `README.md` (este archivo) en la raíz.
-   - `backend/.env.example` y `frontend/.env.example` presentes (sin secretos reales).
-   - `docs/arquitectura.md` y `docs/screenshots/` con las capturas regeneradas.
-5. **Comprimir** `backend/` y `frontend/` junto con `README.md` y `docs/` en un único ZIP.
-6. **Nombrar el archivo**: `Extra_SaveMyMoneyNow_<Nombre>_<Apellidos>.zip`.
-7. **Subir a Aules** dentro de plazo.
+Lo cubierto es la parte que decide: detección de la fila de cabecera y del mapeo
+de columnas, normalización de fechas e importes con los formatos de cada banco,
+la huella de duplicado y las reglas de categorización. El resto del flujo (subida
+real, export a PDF y XLSX, paginación del histórico) se prueba a mano contra
+extractos de BBVA, Santander y uno genérico.
 
 ---
 
 ## Licencia
 
-Trabajo académico del ciclo DAW (DWES). Propiedad intelectual del alumno autor. Uso educativo y de evaluación; no autorizado para distribución comercial.
+MIT. Ver [LICENSE](LICENSE).
