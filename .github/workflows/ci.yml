@@ -1,0 +1,83 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+# Los 113 tests del README (66 backend + 47 frontend) viven en dos paquetes
+# npm independientes, sin workspace que los una. Por eso van en dos jobs: se
+# ejecutan en paralelo, cada uno cachea su propio lockfile y un fallo dice
+# de que lado esta sin abrir el log.
+#
+# VERSIONES DE NODE — por que 22 y 24, y por que NO 26 (medido 2026-08-23):
+#
+#   Node 22 (Jod, LTS mantenimiento)  backend 66 OK · frontend 47 OK
+#   Node 24 (Krypton, LTS activo)     backend 66 OK · frontend 47 OK
+#   Node 26 (Current, no LTS)         backend 66 OK · frontend 6 FALLAN
+#
+# El fallo en Node 26 NO es del codigo ni de jsdom: un `new JSDOM()` recien
+# creado sigue teniendo `localStorage` en Node 26. Lo que pasa es que Node 26
+# define `localStorage` como getter nativo (Web Storage experimental) en
+# globalThis, y como vitest monta el entorno jsdom sobre ese mismo globalThis,
+# el getter nativo gana. Ese getter devuelve `undefined` mientras no se pase
+# `--localstorage-file`, asi que `window.localStorage` sale undefined y los
+# tests de usePersistedState mueren con "Cannot read properties of undefined
+# (reading 'clear')". En Node 24 ese descriptor ni existe, de ahi que pase.
+#
+# Se deja 26 fuera a proposito, no por comodidad: es Current, no LTS, y meterlo
+# hoy pintaria el CI en rojo por un choque de tooling ajeno al proyecto. Cuando
+# se arregle (fijar localStorage en src/setupTests.js, o subir vitest), se
+# anade 26 a la matriz y se borra este parrafo.
+#
+# El repo no declara `engines` ni `.nvmrc`, asi que esta matriz es hoy la unica
+# fuente de verdad sobre en que Node se prueba esto.
+
+jobs:
+  backend:
+    name: backend (node ${{ matrix.node-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: ["22", "24"]
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+      - name: Install
+        run: npm ci
+      - name: Vitest
+        run: npm test
+
+  frontend:
+    name: frontend (node ${{ matrix.node-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: ["22", "24"]
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install
+        run: npm ci
+      - name: Vitest
+        run: npm test
+      - name: Build
+        run: npm run build
